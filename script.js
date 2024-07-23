@@ -4,8 +4,11 @@ class Parking {
   constructor(precioTicket, cantidadTickets) {
     this.precioTicket = precioTicket;
     this.cantidadTickets = cantidadTickets;
-    this.lugaresDisponibles = Array.from({ length: 10 }, (_, i) => i + 1); // Array con los números de lugares disponibles (del 1 al 10)
-    this.lugaresVendidos = []; // Array vacío para almacenar los lugares vendidos
+    this.lugaresDisponibles = Array.from({ length: 11 }, (_, i) => {
+      const letra = String.fromCharCode(65 + i); // A = 65, B = 66, ...
+      return letra + (i + 1); // Ejemplo: A1, B2, ...
+    });
+    this.lugaresVendidos = [];
   }
 
   obtenerLugarAleatorio() {
