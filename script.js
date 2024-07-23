@@ -1,39 +1,76 @@
 //Venta de tickets para parking
 
-const precioTicket = 5;
-let cantidadTickets = 10;
-
-function venderTicket() {
-  if (cantidadTickets > 0) {
-    alert(
-      `¡Bienvenido a nuestro Parking! Tienes ${cantidadTickets} tickets disponibles.`
-    );
-  } else {
-    alert("Lo siento, no quedan más tickets disponibles.");
-    return;
+class Parking {
+  constructor(precioTicket, cantidadTickets) {
+    this.precioTicket = precioTicket;
+    this.cantidadTickets = cantidadTickets;
+    this.lugaresDisponibles = Array.from({ length: 10 }, (_, i) => i + 1); // Array con los números de lugares disponibles (del 1 al 10)
+    this.lugaresVendidos = []; // Array vacío para almacenar los lugares vendidos
   }
 
-  const valorIngresado = prompt("¿Cuántos tickets deseas comprar?");
-  if (valorIngresado === null) {
-    alert("Operación cancelada por el usuario.");
-    return;
+  obtenerLugarAleatorio() {
+    // Método para obtener un lugar aleatorio
+    if (this.lugaresDisponibles.length === 0) {
+      return null; // Si no hay lugares disponibles, retorna null
+    }
+    const indiceAleatorio = Math.floor(
+      Math.random() * this.lugaresDisponibles.length
+    ); // Genera un índice aleatorio
+    return this.lugaresDisponibles.splice(indiceAleatorio, 1)[0]; // Elimina y devuelve el lugar aleatorio
   }
 
-  const cantidadCompra = parseInt(valorIngresado);
-  if (isNaN(cantidadCompra) || cantidadCompra <= 0) {
-    alert("Ingresa una cantidad válida.");
-    return;
+  venderTicket() {
+    // Método para vender un ticket
+    const lugarDisponible = this.obtenerLugarAleatorio(); // Obtiene un lugar disponible
+    if (!lugarDisponible) {
+      alert("Lo siento, no quedan más lugares disponibles."); // Si no hay lugar, muestra un mensaje
+      return;
+    }
+
+    const valorIngresado = prompt("¿Cuántos tickets deseas comprar?");
+    if (valorIngresado === null) {
+      alert("Operación cancelada por el usuario."); // Si el usuario cancela, muestra un mensaje
+      return;
+    }
+
+    const cantidadCompra = parseInt(valorIngresado);
+    if (isNaN(cantidadCompra) || cantidadCompra <= 0) {
+      alert("Ingresa una cantidad válida."); // Si la cantidad ingresada no es válida, muestra un mensaje
+      return;
+    }
+
+    if (cantidadCompra <= this.cantidadTickets) {
+      const totalVenta = cantidadCompra * this.precioTicket; // Calcula el total de la venta
+      alert(
+        `Tickets vendidos: ${cantidadCompra}\nLugar(es): ${this.mostrarLugaresVendidos(
+          cantidadCompra
+        )}\nPrecio individual: $${this.precioTicket}\nTotal: $${totalVenta}`
+      ); // Muestra un resumen de la venta
+      this.cantidadTickets -= cantidadCompra; // Actualiza la cantidad de tickets disponibles
+      this.lugaresVendidos.push({
+        lugar: lugarDisponible,
+        cantidad: cantidadCompra,
+      }); // Agrega el lugar vendido al array de lugares vendidos
+    } else {
+      alert("No hay suficientes tickets disponibles."); // Si no hay suficientes tickets, muestra un mensaje
+    }
   }
 
-  if (cantidadCompra <= cantidadTickets) {
-    const totalVenta = cantidadCompra * precioTicket;
-    alert(`Tickets vendidos: ${cantidadCompra}\nTotal: $${totalVenta}`);
-    cantidadTickets -= cantidadCompra;
-  } else {
-    alert("No hay suficientes tickets disponibles.");
+  mostrarLugaresVendidos(cantidadTickets) {
+    // Método para mostrar los lugares vendidos
+    const lugaresTexto = [];
+    for (let i = 0; i < cantidadTickets; i++) {
+      const lugar = this.obtenerLugarAleatorio();
+      if (lugar !== null) {
+        lugaresTexto.push(lugar);
+      }
+    }
+    return lugaresTexto.join(","); // Devuelve los lugares vendidos como texto separado por comas
   }
 }
 
-while ((cantidadTickets) => 0) {
-  venderTicket();
-}
+const miParking = new Parking(5, 10); // Crea una instancia de Parking con un precio de 5 c/u y 10 tickets totales.
+
+// Evento click al botón
+const comprarTicket = document.querySelector("#comprarTicket");
+comprarTicket.addEventListener("click", () => miParking.venderTicket()); // Asigna el método venderTicket al botón
