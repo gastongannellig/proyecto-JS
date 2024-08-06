@@ -1,79 +1,133 @@
-//Venta de tickets para parking
-
 class Parking {
   constructor(precioTicket, cantidadTickets) {
     this.precioTicket = precioTicket;
     this.cantidadTickets = cantidadTickets;
-    this.lugaresDisponibles = Array.from({ length: 22 }, (_, i) => {
-      const letra = String.fromCharCode(65 + i); // A = 65, B = 66, ...
-      return letra + (i + 1); // Ejemplo: A1, B2, ...
-    });
+
+    // Genera una lista de lugares disponibles (A1, A2, ..., V22)
+    this.lugaresDisponibles = Array.from(
+      { length: 22 },
+      (_, i) => `${String.fromCharCode(65 + i)}${i + 1}`
+    );
     this.lugaresVendidos = [];
+
+    // Carga los datos almacenados en localStorage si existen
+    const datosGuardados = localStorage.getItem("datosParking");
+    if (datosGuardados) {
+      Object.assign(this, JSON.parse(datosGuardados)); // Asigna los datos cargados directamente
+    }
+
+    // Obtiene los elementos del DOM que se usarán
+    this.ticketsDisponiblesEl = document.getElementById("ticketsDisponibles");
+    this.cardContainer = document.getElementById("cardContainer");
+
+    this.actualizarTicketsDisponibles();
+
+    // Asigna el evento click al botón de comprar ticket
+    document.getElementById("comprarTicket").addEventListener("click", () => {
+      this.mostrarFormularioCompra(); // Muestra el formulario para comprar tickets
+    });
   }
 
+  // Actualiza el h3 que muestra los tickets disponibles
+  actualizarTicketsDisponibles() {
+    this.ticketsDisponiblesEl.textContent = `TICKETS DISPONIBLES: ${this.cantidadTickets}`;
+  }
+
+  // Obtiene un lugar aleatorio y lo elimina de los disponibles
   obtenerLugarAleatorio() {
-    // Método para obtener un lugar aleatorio
-    if (this.lugaresDisponibles.length === 0) {
-      return null; // Si no hay lugares disponibles, retorna null
+    if (!this.lugaresDisponibles.length) {
+      return null; // No hay lugares disponibles
     }
     const indiceAleatorio = Math.floor(
       Math.random() * this.lugaresDisponibles.length
-    ); // Genera un índice aleatorio
-    return this.lugaresDisponibles.splice(indiceAleatorio, 1)[0]; // Elimina y devuelve el lugar aleatorio
+    );
+    return this.lugaresDisponibles.splice(indiceAleatorio, 1)[0]; // Elimina el lugar de la lista y lo retorna
   }
 
-  venderTicket() {
-    // Método para vender un ticket
-    const lugarDisponible = this.obtenerLugarAleatorio(); // Obtiene un lugar disponible
-    if (!lugarDisponible) {
-      alert("Lo siento, no quedan más lugares disponibles."); // Si no hay lugar, muestra un mensaje
-      return;
-    }
+  // Muestra el formulario para que el usuario ingrese la cantidad de tickets a comprar
+  mostrarFormularioCompra() {
+    // Limpia el contenedor si ya hay una card
+    this.cardContainer.innerHTML = "";
 
-    const valorIngresado = prompt("¿Cuántos tickets deseas comprar?");
-    if (valorIngresado === null) {
-      alert("Operación cancelada por el usuario."); // Si el usuario cancela, muestra un mensaje
-      return;
+    // Crea una card con el formulario para ingresar la cantidad de tickets
+    const formCard = document.createElement("div");
+    formCard.className = "card";
+    formCard.innerHTML = `
+      <h4>Compra de Tickets</h4>
+      <label for="cantidadTickets">¿Cuántos tickets deseas comprar?</label>
+      <input type="number" id="cantidadTickets" min="1" />
+      <button id="confirmarCompra">Confirmar</button>
+      <button id="cancelarCompra">Cancelar</button>
+    `;
+
+    this.cardContainer.appendChild(formCard);
+
+    // Agrega eventos a los botones de la card
+    document
+      .getElementById("confirmarCompra")
+      .addEventListener("click", () => this.confirmarCompra());
+    document
+      .getElementById("cancelarCompra")
+      .addEventListener("click", () => (this.cardContainer.innerHTML = ""));
+  }
+
+  // Procesa la compra de tickets
+  confirmarCompra() {
+    const cantidadTicketsInput = document.getElementById("cantidadTickets");
+    const valorIngresado = cantidadTicketsInput.value;
+
+    // Verifica si el valor ingresado es válido usando operadores lógicos
+    if (!valorIngresado || isNaN(valorIngresado) || valorIngresado <= 0) {
+      return this.mostrarInformacionVenta("Ingresa una cantidad válida.");
     }
 
     const cantidadCompra = parseInt(valorIngresado);
-    if (isNaN(cantidadCompra) || cantidadCompra <= 0) {
-      alert("Ingresa una cantidad válida."); // Si la cantidad ingresada no es válida, muestra un mensaje
-      return;
+    if (cantidadCompra > this.cantidadTickets) {
+      return this.mostrarInformacionVenta(
+        "No hay suficientes tickets disponibles."
+      );
     }
 
-    if (cantidadCompra <= this.cantidadTickets) {
-      const totalVenta = cantidadCompra * this.precioTicket; // Calcula el total de la venta
-      alert(
-        `Tickets vendidos: ${cantidadCompra}\nLugar(es): ${this.mostrarLugaresVendidos(
-          cantidadCompra
-        )}\nPrecio individual: $${this.precioTicket}\nTotal: $${totalVenta}`
-      ); // Muestra un resumen de la venta
-      this.cantidadTickets -= cantidadCompra; // Actualiza la cantidad de tickets disponibles
-      this.lugaresVendidos.push({
-        lugar: lugarDisponible,
-        cantidad: cantidadCompra,
-      }); // Agrega el lugar vendido al array de lugares vendidos
-    } else {
-      alert("No hay suficientes tickets disponibles."); // Si no hay suficientes tickets, muestra un mensaje
-    }
+    const totalVenta = cantidadCompra * this.precioTicket;
+    const lugaresVendidos = this.mostrarLugaresVendidos(cantidadCompra);
+
+    // Actualiza los tickets disponibles y guarda la venta
+    this.cantidadTickets -= cantidadCompra;
+    this.lugaresVendidos.push({
+      lugar: lugaresVendidos,
+      cantidad: cantidadCompra,
+    });
+    this.actualizarTicketsDisponibles();
+    this.guardarDatosEnLocalStorage();
+
+    // Muestra la card con el resumen de la venta
+    this.mostrarInformacionVenta(
+      `Tickets vendidos: ${cantidadCompra}<br>Lugar(es): ${lugaresVendidos}<br>Precio individual: $${this.precioTicket}<b><br>Total: $${totalVenta}</b>`
+    );
   }
 
+  // Muestra los lugares vendidos en formato de texto
   mostrarLugaresVendidos(cantidadTickets) {
-    // Método para mostrar los lugares vendidos
-    const lugaresTexto = [];
-    for (let i = 0; i < cantidadTickets; i++) {
-      const lugar = this.obtenerLugarAleatorio();
-      if (lugar !== null) {
-        lugaresTexto.push(lugar);
-      }
-    }
-    return lugaresTexto.join(","); // Devuelve los lugares vendidos como texto separado por comas
+    return Array.from({ length: cantidadTickets }, () =>
+      this.obtenerLugarAleatorio()
+    )
+      .filter(Boolean) // Filtra los lugares nulos
+      .join(","); // Une los lugares de parking separados por comas
+  }
+
+  // Guarda los datos actuales en localStorage
+  guardarDatosEnLocalStorage() {
+    localStorage.setItem("datosParking", JSON.stringify(this));
+  }
+
+  // Muestra una card con la información de la venta
+  mostrarInformacionVenta(mensaje) {
+    const infoCard = document.createElement("div");
+    infoCard.className = "card info-card";
+    infoCard.innerHTML = `<h4>Resumen de la Venta</h4><p>${mensaje}</p>`;
+    this.cardContainer.appendChild(infoCard); // Agrega la card al contenedor
   }
 }
 
-const miParking = new Parking(5, 10); // Crea una instancia de Parking con un precio de 5 c/u y 10 tickets totales.
-
-// Evento click al botón
-const comprarTicket = document.querySelector("#comprarTicket");
-comprarTicket.addEventListener("click", () => miParking.venderTicket()); // Asigna el método venderTicket al botón
+// Crear una instancia de la clase Parking con el precio y cantidad de tickets iniciales
+const miParking = new Parking(5, 10);
