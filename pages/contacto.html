@@ -9,7 +9,7 @@
   <body>
     <header>
       <nav>
-        <h1>GMTV PARKING</h1>
+        <h1><a href="../index.html">GMTV PARKING</a></h1>
         <ul>
           <li><a href="../index.html">INICIO</a></li>
           <li><a href="./servicios.html">SERVICIOS</a></li>
@@ -19,13 +19,26 @@
     </header>
 
     <main>
-      <div>
-        <button id="comprarTicket">COMPRAR TICKET</button>
-        <!-- Contenedor para la card de resumen y formulario -->
-        <div id="cardContainer"></div>
-        <h3 id="ticketsDisponibles">TICKETS DISPONIBLES: 10</h3>
-        <p>Disponible las 24 horas del día</p>
-      </div>
+      <h2>Contacto</h2>
+      <section class="contact-form">
+        <form action="#" method="post">
+          <div class="form-group">
+            <label for="name">Nombre:</label>
+            <input type="text" id="name" name="name" required />
+          </div>
+          <div class="form-group">
+            <label for="email">Correo Electrónico:</label>
+            <input type="email" id="email" name="email" required />
+          </div>
+          <div class="form-group">
+            <label for="message">Mensaje:</label>
+            <textarea id="message" name="message" rows="5" required></textarea>
+          </div>
+          <div class="form-group">
+            <button type="submit">Enviar</button>
+          </div>
+        </form>
+      </section>
     </main>
 
     <footer>

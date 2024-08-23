@@ -1,0 +1,13 @@
+{
+  "tiposTickets": ["Ticket General", "Ticket Lisiado", "Ticket Premium"],
+  "cantidadTickets": {
+    "Ticket General": 5,
+    "Ticket Lisiado": 2,
+    "Ticket Premium": 3
+  },
+  "precioTickets": {
+    "Ticket General": 5,
+    "Ticket Lisiado": 3,
+    "Ticket Premium": 10
+  }
+}

@@ -12,11 +12,9 @@ body {
   flex-direction: column;
 }
 
-/* Contenedor principal para el contenido */
 main {
   flex: 1;
-  max-width: 1200px;
-  margin: 10rem auto;
+  margin: 10rem;
   padding: 5rem;
   background-color: white;
   border-radius: 8px;
@@ -24,7 +22,6 @@ main {
   text-align: center;
 }
 
-/* Estilo del encabezado y navegación */
 header {
   background-color: #2c3e50;
   color: white;
@@ -40,9 +37,11 @@ header nav {
   padding: 0 20px;
 }
 
-header h1 {
+header h1 a {
   margin: 0;
-  font-size: 1.8em;
+  font-size: 1.5em;
+  text-decoration: none;
+  color: white;
 }
 
 header ul {
@@ -66,7 +65,7 @@ header ul li a:hover {
   text-decoration: underline;
 }
 
-/* Botones */
+/*BOTONES*/
 main button {
   padding: 10px 20px;
   font-size: 1em;
@@ -82,15 +81,106 @@ main button:hover {
   background-color: #2980b9;
 }
 
-/* Estilo del contenedor de la card */
+h2 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+/*SERVICIOS PAGE*/
+.service-card {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  margin: 20px 0;
+}
+
+.service-info {
+  max-width: 50%;
+  text-align: left;
+}
+
+/*CONTACTOS PAGE*/
+
+.contact-form {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 50px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  text-align: left;
+}
+
+label {
+  display: block;
+  margin: 5px;
+  font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #333;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #555;
+}
+/*SPINNER*/
+
+.spinner {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #3498db;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+  margin: 20px auto;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*CARD ESTILO*/
 #cardContainer {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 20px;
+  justify-content: center;
+  width: 100%;
 }
 
-/* Estilo de la card de formulario y de información */
+/*CARD FORMULARIO*/
 .card {
   background-color: #fff;
   border-radius: 8px;
@@ -98,7 +188,7 @@ main button:hover {
   padding: 20px;
   width: 300px;
   text-align: center;
-  margin-bottom: 20px;
+  margin: 20px auto 20px auto;
 }
 
 .card label {
@@ -145,7 +235,11 @@ main button:hover {
 }
 
 .card.info-card {
-  background-color: #f9e79f;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  color: #fff;
+  margin-top: 20px;
 }
 
 .card.info-card h4 {
@@ -156,15 +250,69 @@ main button:hover {
   font-size: 1em;
   margin: 0;
 }
+/*tipos de ticket */
+.ticket-general {
+  background-color: #7471ff;
+}
 
-/* Estilo del h3 de tickets disponibles */
+.ticket-lisiado {
+  background-color: #c6ff6b;
+}
+
+.ticket-premium {
+  background-color: #e2a703;
+}
+
+.resumen-card {
+  border: 1px solid #ccc;
+  padding: 16px;
+}
+
+/* Estilo para el select */
+.card select {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f9f9f9;
+  color: #333;
+  appearance: none;
+}
+
+/* Flecha del select */
+.card select::-ms-expand {
+  display: none;
+}
+
+/*h3 de tickets disponibles */
 h3#ticketsDisponibles {
   margin: 20px 0;
   font-size: 1.2em;
-  color: #e74c3c;
+  color: #404a85;
 }
 
-/* Estilo del pie de página */
+/*tickets disponibles */
+#ticketsDisponibles {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-top: 20px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.ticket-item {
+  margin: 5px 0;
+}
+
 footer {
   background-color: #2c3e50;
   color: white;
